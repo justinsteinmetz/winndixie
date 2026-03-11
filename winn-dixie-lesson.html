@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Because of Winn-Dixie</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dust:    #d4924a;
+    --ochre:   #c07830;
+    --shadow:  #2d3a5c;
+    --dark:    #161e36;
+    --haze:    #8fa4b8;
+    --trailer: #dde3ed;
+    --teal:    #7ab8a0;
+    --palm:    #3d6b52;
+    --fog:     #9aaabf;
+    --paper:   #f0f2f7;
+    --red-acc: #9e3a2a;
+    --chalk:   #e4e8f0;
+    --craft:   #5a4a7a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.08;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  body {
+    background-color: var(--paper);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    color: var(--dark);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 40% at 60% 0%, rgba(45,58,92,0.1) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 60% at 10% 100%, rgba(212,146,74,0.08) 0%, transparent 60%);
+  }
+
+  header {
+    background: linear-gradient(175deg, var(--dark) 0%, var(--shadow) 55%, #4a5878 100%);
+    color: var(--paper);
+    text-align: center;
+    padding: 2.5rem 1rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -20%; left: 38%;
+    width: 18%; height: 160%;
+    background: rgba(22,30,54,0.18);
+    transform: rotate(-18deg);
+    pointer-events: none;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    top: -20%; left: 54%;
+    width: 8%; height: 160%;
+    background: rgba(22,30,54,0.09);
+    transform: rotate(-18deg);
+    pointer-events: none;
+  }
+  header h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: clamp(1.8rem, 5.5vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    position: relative;
+    text-shadow: 2px 3px 8px rgba(22,30,54,0.4);
+  }
+  header p {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1rem;
+    opacity: 0.82;
+    margin-top: 0.5rem;
+    letter-spacing: 0.5px;
+    position: relative;
+  }
+
+  .paw-strip {
+    background: var(--dust);
+    display: flex;
+    justify-content: center;
+    gap: 1.4rem;
+    padding: 0.5rem;
+    font-size: 1.3rem;
+    border-bottom: 3px solid var(--ochre);
+  }
+
+  .sequence-note {
+    background: var(--shadow);
+    color: var(--paper);
+    text-align: center;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 0.82rem;
+    padding: 0.4rem 1rem;
+    letter-spacing: 0.3px;
+    opacity: 0.9;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.9rem 1rem;
+    background: var(--chalk);
+    border-bottom: 2px solid var(--fog);
+  }
+
+  .nav-btn {
+    background: var(--trailer);
+    border: 1.5px solid var(--fog);
+    border-left: 3px solid transparent;
+    color: var(--shadow);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 0.85rem;
+    padding: 0.38rem 0.85rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 1px 2px 0 rgba(45,58,92,0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .nav-btn .step-num {
+    font-size: 0.7rem;
+    background: var(--fog);
+    color: var(--paper);
+    border-radius: 50%;
+    width: 16px; height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { background: var(--ochre); color: var(--paper); border-left-color: var(--dust); }
+  .nav-btn.active {
+    background: var(--shadow);
+    color: var(--paper);
+    border-left-color: var(--dust);
+    border-top-color: var(--dark);
+    border-right-color: var(--dark);
+    border-bottom-color: var(--dark);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.25);
+  }
+  .nav-btn.active .step-num { background: var(--dust); }
+
+  /* craft tab special colour */
+  .nav-btn.craft-btn { border-left-color: rgba(90,74,122,0.4); }
+  .nav-btn.craft-btn.active { background: var(--craft); border-left-color: #9b7fd4; }
+  .nav-btn.ext-btn.active { background: var(--dark); border-left-color: var(--haze); }
+
+  .section {
+    display: none;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1rem 3rem;
+    animation: fadeIn 0.32s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 1.7rem;
+    color: var(--shadow);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--dust);
+  }
+  .section-title.craft-title { color: var(--craft); border-bottom-color: #9b7fd4; }
+  .section-title.ext-title { color: var(--dark); }
+
+  .section-intro {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 0.9rem;
+    color: var(--ochre);
+    margin-bottom: 1.2rem;
+    margin-top: -0.8rem;
+  }
+
+  .card {
+    background: var(--paper);
+    border-radius: 3px;
+    padding: 1.5rem;
+    margin-bottom: 1.3rem;
+    border: 1px solid var(--fog);
+    box-shadow: 2px 3px 0 rgba(45,58,92,0.08), 4px 6px 16px rgba(45,58,92,0.06);
+  }
+  .card h3 {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--ochre);
+    margin-bottom: 0.9rem;
+  }
+  .card.craft-card { border-left: 4px solid var(--craft); }
+  .card.craft-card h3 { color: var(--craft); }
+
+  /* CHARS */
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+  }
+  .char-card {
+    background: var(--chalk);
+    border-radius: 3px;
+    padding: 1rem 0.8rem;
+    text-align: center;
+    border: 1.5px solid var(--fog);
+    border-bottom: 3px solid var(--fog);
+    box-shadow: 2px 3px 0 rgba(45,58,92,0.08);
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .char-card:hover {
+    border-color: var(--dust);
+    border-bottom-color: var(--ochre);
+    transform: translateY(-2px) rotate(-0.3deg);
+  }
+  .char-emoji { font-size: 2.2rem; margin-bottom: 0.4rem; }
+  .char-name { font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 1rem; color: var(--shadow); }
+  .char-desc { font-family: 'Patrick Hand', cursive; font-size: 0.78rem; color: var(--ochre); margin-top: 0.25rem; }
+
+  /* VOCAB */
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.85rem;
+  }
+  .vocab-card {
+    background: var(--paper);
+    border-radius: 3px;
+    padding: 1rem;
+    border-left: 4px solid var(--dust);
+    border-top: 1px solid var(--fog);
+    border-right: 1px solid var(--fog);
+    border-bottom: 1px solid var(--fog);
+    box-shadow: 2px 3px 0 rgba(45,58,92,0.06);
+    cursor: pointer;
+    transition: all 0.16s;
+  }
+  .vocab-card:hover { transform: translateY(-2px); border-left-color: var(--ochre); }
+  .vocab-card.revealed { border-left-color: var(--palm); }
+  .vocab-word { font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 1.2rem; color: var(--shadow); }
+  .vocab-hint { font-family: 'Patrick Hand', cursive; font-size: 0.75rem; color: var(--fog); margin-top: 0.25rem; font-style: italic; }
+  .vocab-def { font-family: 'Patrick Hand', cursive; font-size: 0.86rem; color: var(--dark); margin-top: 0.5rem; display: none; line-height: 1.5; }
+  .vocab-card.revealed .vocab-def { display: block; }
+
+  /* QUIZ */
+  .quiz-q {
+    background: var(--paper);
+    border-radius: 3px;
+    padding: 1.4rem;
+    margin-bottom: 1.1rem;
+    border: 1px solid var(--fog);
+    box-shadow: 2px 3px 0 rgba(45,58,92,0.06);
+    position: relative;
+  }
+  .quiz-q p { font-weight: 700; font-size: 0.97rem; margin-bottom: 1rem; color: var(--dark); line-height: 1.6; }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  @media (max-width: 480px) { .options { grid-template-columns: 1fr; } }
+  .opt-btn {
+    background: var(--chalk);
+    border: 1.5px solid var(--fog);
+    border-radius: 3px;
+    padding: 0.6rem 0.8rem;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 0.92rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    color: var(--dark);
+  }
+  .opt-btn:not(:disabled):hover { border-color: var(--dust); background: var(--trailer); }
+  .opt-btn.thinking { opacity: 0.55; cursor: not-allowed; }
+  .opt-btn.correct { background: #dff0e0; border-color: var(--palm); color: var(--palm); font-weight: 700; }
+  .opt-btn.wrong { background: #f5e0dc; border-color: var(--red-acc); color: var(--red-acc); }
+  .feedback { margin-top: 0.8rem; font-family: 'Patrick Hand', cursive; font-size: 0.92rem; font-weight: 600; min-height: 1.2rem; }
+  .think-overlay { position: absolute; bottom: 0.7rem; right: 0.9rem; font-family: 'Patrick Hand', cursive; font-size: 0.78rem; color: var(--fog); pointer-events: none; }
+
+  /* FILL */
+  .blank-sentence { font-size: 1rem; line-height: 2.5; margin-bottom: 0.9rem; color: var(--dark); }
+  .blank-input {
+    border: none; border-bottom: 2px solid var(--dust);
+    background: transparent; font-family: 'Patrick Hand', cursive; font-size: 1.1rem;
+    width: 130px; text-align: center; color: var(--ochre); outline: none; padding: 0 4px;
+  }
+  .blank-input.correct { border-color: var(--palm); color: var(--palm); }
+  .blank-input.wrong { border-color: var(--red-acc); color: var(--red-acc); }
+
+  /* MATCH */
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; margin-bottom: 1rem; }
+  .match-col { display: flex; flex-direction: column; gap: 0.5rem; }
+  .match-item {
+    background: var(--chalk); border: 1.5px solid var(--fog); border-left: 3px solid transparent;
+    border-radius: 3px; padding: 0.55rem 0.8rem; cursor: pointer;
+    font-family: 'Patrick Hand', cursive; font-size: 0.88rem; transition: all 0.14s; user-select: none; line-height: 1.4;
+  }
+  .match-item:hover { border-color: var(--dust); border-left-color: var(--dust); background: var(--trailer); }
+  .match-item.selected { background: var(--dust); color: white; border-color: var(--shadow); border-left-color: var(--ochre); }
+  .match-item.matched-correct { background: #dff0e0; border-color: var(--palm); border-left-color: var(--palm); color: var(--palm); }
+  .match-item.matched-wrong { background: #f5e0dc; border-color: var(--red-acc); }
+
+  /* DRAG */
+  .drag-bank {
+    display: flex; flex-wrap: wrap; gap: 0.6rem; min-height: 52px;
+    padding: 0.8rem; border: 2px dashed var(--fog); border-radius: 3px;
+    margin-bottom: 1.2rem; background: rgba(45,58,92,0.03);
+  }
+  .drag-word {
+    background: var(--ochre); color: var(--paper); border-radius: 3px;
+    padding: 0.3rem 0.85rem; font-family: 'Patrick Hand', cursive; font-size: 0.92rem;
+    cursor: pointer; user-select: none; transition: transform 0.12s, opacity 0.15s;
+    box-shadow: 1px 2px 0 rgba(45,58,92,0.25);
+  }
+  .drag-word.selected-word { outline: 3px solid var(--shadow); outline-offset: 2px; }
+  .drag-word:hover:not(.used) { transform: translateY(-1px); }
+  .drag-word.used { opacity: 0.28; cursor: default; }
+  .drop-sentence { font-size: 0.97rem; line-height: 2.8; margin-bottom: 0.3rem; color: var(--dark); }
+  .drop-zone {
+    display: inline-block; min-width: 110px; border-bottom: 2px solid var(--dust);
+    text-align: center; font-family: 'Patrick Hand', cursive; font-size: 1.1rem;
+    color: var(--ochre); padding: 0 6px; vertical-align: middle; cursor: pointer; transition: background 0.14s;
+  }
+  .drop-zone.filled { border-color: var(--palm); }
+  .drop-zone.correct-zone { color: var(--palm); }
+  .drop-zone.wrong-zone { color: var(--red-acc); }
+
+  /* CREATIVE */
+  .story-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.2rem; }
+  .story-tab {
+    background: var(--chalk); border: 1.5px solid var(--fog); border-bottom: none;
+    border-radius: 3px 3px 0 0; padding: 0.4rem 1rem;
+    font-family: 'Patrick Hand', cursive; font-size: 0.88rem; cursor: pointer;
+    color: var(--shadow); transition: all 0.14s;
+  }
+  .story-tab.active { background: var(--shadow); color: var(--paper); border-color: var(--shadow); }
+  .story-panel { display: none; }
+  .story-panel.active { display: block; }
+
+  .story-area {
+    width: 100%; min-height: 150px; font-family: 'Patrick Hand', cursive; font-size: 1.1rem;
+    border: 1.5px solid var(--fog); border-radius: 0 3px 3px 3px; padding: 1rem;
+    resize: vertical; color: var(--dark); background: var(--paper); outline: none; line-height: 1.9;
+    background-image: repeating-linear-gradient(transparent, transparent 34px, rgba(143,164,184,0.18) 34px, rgba(143,164,184,0.18) 35px);
+    background-attachment: local;
+  }
+  .story-area:focus { border-color: var(--ochre); }
+
+  .story-prompts { display: flex; flex-wrap: wrap; gap: 0.42rem; margin: 0.8rem 0; }
+  .prompt-chip {
+    background: var(--chalk); border: 1.5px solid var(--fog); border-radius: 20px;
+    padding: 0.28rem 0.85rem; font-family: 'Patrick Hand', cursive; font-size: 0.85rem;
+    cursor: pointer; transition: all 0.13s; color: var(--shadow);
+  }
+  .prompt-chip:hover { background: var(--teal); color: white; border-color: var(--teal); }
+
+  /* TEN THINGS */
+  .ten-things-list { list-style: none; counter-reset: things; margin-top: 0.8rem; }
+  .ten-things-list li {
+    counter-increment: things;
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 0.55rem;
+  }
+  .ten-things-list li::before {
+    content: counter(things);
+    min-width: 24px; height: 24px;
+    background: var(--dust); color: white;
+    border-radius: 50%; font-family: 'Libre Baskerville', serif;
+    font-size: 0.78rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .ten-input {
+    flex: 1; border: none; border-bottom: 1.5px solid var(--fog);
+    background: transparent; font-family: 'Patrick Hand', cursive; font-size: 1rem;
+    color: var(--dark); outline: none; padding: 0.25rem 0.3rem; transition: border-color 0.14s;
+  }
+  .ten-input:focus { border-bottom-color: var(--ochre); }
+
+  /* SIMILE */
+  .simile-block {
+    background: var(--chalk); border-radius: 3px; padding: 1.2rem 1.4rem;
+    margin-bottom: 1rem; border-left: 4px solid var(--craft);
+  }
+  .simile-quote {
+    font-family: 'Libre Baskerville', serif; font-style: italic;
+    font-size: 1.05rem; color: var(--dark); line-height: 1.7; margin-bottom: 0.9rem;
+  }
+  .simile-quote span.highlight { color: var(--craft); font-weight: 700; }
+  .simile-question { font-family: 'Patrick Hand', cursive; font-size: 0.9rem; color: var(--shadow); margin-bottom: 0.6rem; }
+  .simile-input {
+    width: 100%; border: none; border-bottom: 1.5px solid var(--craft);
+    background: transparent; font-family: 'Patrick Hand', cursive; font-size: 1rem;
+    color: var(--dark); outline: none; padding: 0.3rem 0.3rem; margin-bottom: 0.6rem;
+  }
+  .simile-reveal-btn {
+    background: var(--craft); color: white; border: none; border-radius: 3px;
+    padding: 0.3rem 0.9rem; font-family: 'Patrick Hand', cursive; font-size: 0.85rem;
+    cursor: pointer; transition: background 0.14s;
+  }
+  .simile-reveal-btn:hover { background: var(--dark); }
+  .simile-answer {
+    margin-top: 0.6rem; background: white; border-radius: 3px; padding: 0.7rem 1rem;
+    font-family: 'Patrick Hand', cursive; font-size: 0.9rem; line-height: 1.6;
+    color: var(--dark); display: none; border-left: 3px solid var(--craft);
+  }
+
+  /* POV */
+  .pov-tabs { display: flex; gap: 0.4rem; margin-bottom: 0; flex-wrap: wrap; }
+  .pov-tab {
+    background: var(--chalk); border: 1.5px solid var(--fog); border-bottom: none;
+    border-radius: 3px 3px 0 0; padding: 0.4rem 1rem;
+    font-family: 'Patrick Hand', cursive; font-size: 0.85rem; cursor: pointer;
+    color: var(--shadow); transition: all 0.14s;
+  }
+  .pov-tab.active { background: var(--craft); color: var(--paper); border-color: var(--craft); }
+  .pov-panel { display: none; border: 1.5px solid var(--fog); border-radius: 0 3px 3px 3px; padding: 1rem; background: var(--paper); }
+  .pov-panel.active { display: block; }
+  .pov-scene {
+    font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 0.92rem;
+    line-height: 1.8; color: var(--shadow); margin-bottom: 0.9rem;
+    padding: 0.8rem; background: var(--chalk); border-radius: 3px; border-left: 3px solid var(--dust);
+  }
+
+  /* EXTENSION */
+  .ext-q {
+    background: var(--chalk); border-radius: 3px; padding: 1.2rem 1.4rem;
+    margin-bottom: 1rem; border: 1px solid var(--fog); border-left: 4px solid var(--haze);
+  }
+  .ext-q p { font-size: 0.97rem; line-height: 1.65; margin-bottom: 0.7rem; color: var(--dark); }
+  .ext-reveal-btn {
+    background: var(--haze); color: white; border: none; border-radius: 3px;
+    padding: 0.35rem 0.9rem; font-family: 'Patrick Hand', cursive; font-size: 0.85rem;
+    cursor: pointer; transition: background 0.14s;
+  }
+  .ext-reveal-btn:hover { background: var(--shadow); }
+  .ext-answer {
+    margin-top: 0.7rem; background: var(--paper); border-radius: 3px; padding: 0.7rem 1rem;
+    font-family: 'Patrick Hand', cursive; font-size: 0.9rem; line-height: 1.6;
+    color: var(--dark); display: none; border-left: 3px solid var(--teal);
+  }
+  .ext-sensory {
+    background: var(--paper); border-left: 4px solid var(--dust); border-radius: 3px;
+    padding: 1.2rem; margin-top: 1rem;
+  }
+  .sensory-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; }
+  .sensory-label { font-family: 'Patrick Hand', cursive; font-size: 0.88rem; color: var(--ochre); min-width: 60px; }
+  .sensory-input {
+    flex: 1; border: none; border-bottom: 1.5px solid var(--fog);
+    background: transparent; font-family: 'Patrick Hand', cursive; font-size: 0.95rem;
+    color: var(--dark); outline: none; padding: 0.25rem 0.3rem;
+  }
+  .sensory-input:focus { border-bottom-color: var(--dust); }
+
+  /* BUTTONS */
+  .btn {
+    background: var(--shadow); color: var(--paper); border: none; border-radius: 3px;
+    padding: 0.6rem 1.4rem; font-family: 'Patrick Hand', cursive; font-size: 1rem;
+    cursor: pointer; transition: background 0.16s, transform 0.1s; margin-top: 0.8rem;
+    box-shadow: 2px 3px 0 rgba(22,30,54,0.2);
+  }
+  .btn:hover { background: var(--dark); transform: translateY(-1px); }
+  .btn.secondary { background: var(--teal); box-shadow: 2px 3px 0 rgba(61,107,82,0.25); }
+  .btn.secondary:hover { background: #4f8a6a; }
+  .btn.craft { background: var(--craft); }
+  .btn.craft:hover { background: #3d3055; }
+
+  .score-badge {
+    display: inline-block; background: var(--palm); color: white; border-radius: 3px;
+    padding: 0.22rem 0.85rem; font-family: 'Patrick Hand', cursive; font-size: 0.95rem; margin-left: 0.6rem;
+  }
+  .progress-bar-wrap { background: rgba(45,58,92,0.1); border-radius: 2px; height: 7px; margin-bottom: 1.4rem; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--dust), var(--shadow)); border-radius: 2px; transition: width 0.4s; }
+
+  .theme-tag {
+    display: inline-block; background: var(--haze); color: var(--dark); border-radius: 3px;
+    padding: 0.18rem 0.65rem; font-family: 'Patrick Hand', cursive; font-size: 0.8rem;
+    margin: 0.2rem; border: 1px solid rgba(143,164,184,0.35);
+  }
+  .result-line { margin-top: 1rem; font-family: 'Patrick Hand', cursive; font-weight: 600; font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🐾 Because of Winn-Dixie</h1>
+  <p>by Kate DiCamillo</p>
+</header>
+<div class="paw-strip">
+  <span>🐾</span><span>📚</span><span>🐾</span><span>🌿</span><span>🐾</span><span>🍬</span><span>🐾</span>
+</div>
+<div class="sequence-note">Work through in order — start with Story, finish with My Story or Extension.</div>
+
+<nav>
+  <button class="nav-btn active" onclick="show('story',this)"><span class="step-num">1</span> Story</button>
+  <button class="nav-btn" onclick="show('characters',this)"><span class="step-num">2</span> Characters</button>
+  <button class="nav-btn" onclick="show('vocab',this)"><span class="step-num">3</span> Vocabulary</button>
+  <button class="nav-btn" onclick="show('quiz',this)"><span class="step-num">4</span> Quiz</button>
+  <button class="nav-btn" onclick="show('fill',this)"><span class="step-num">5</span> Fill In</button>
+  <button class="nav-btn" onclick="show('drag',this)"><span class="step-num">6</span> Sort It</button>
+  <button class="nav-btn" onclick="show('match',this)"><span class="step-num">7</span> Match</button>
+  <button class="nav-btn craft-btn" onclick="show('craft',this)"><span class="step-num">✦</span> Writer's Craft</button>
+  <button class="nav-btn" onclick="show('creative',this)"><span class="step-num">8</span> My Story</button>
+  <button class="nav-btn ext-btn" onclick="show('extension',this)"><span class="step-num">★</span> Extension</button>
+</nav>
+
+<!-- ===== 1. STORY ===== -->
+<section id="story" class="section active">
+  <div class="section-title">📖 The Story</div>
+  <div class="section-intro">Read this first.</div>
+  <div class="card">
+    <h3>What happens?</h3>
+    <p style="line-height:1.95; font-size:1rem;">
+      Opal is 10 years old. She has just moved to a small town called <strong>Naomi</strong> in Florida with her father, who is a preacher. She doesn't know anyone and feels very lonely.
+      <br><br>
+      One afternoon, Opal goes to the supermarket — also called <strong>Winn-Dixie</strong>. Inside, she finds a large, scruffy dog causing chaos. He has no owner and nowhere to go.
+      <br><br>
+      Opal decides to keep him. She names him <strong>Winn-Dixie</strong> after the supermarket where she found him.
+      <br><br>
+      Over the summer, Winn-Dixie helps Opal meet the interesting and lonely people of Naomi. Through him, she makes friends and starts to feel like she belongs somewhere. 🐕
+    </p>
+  </div>
+  <div class="card">
+    <h3>🌍 Big ideas in this book</h3>
+    <p style="margin-bottom:0.9rem; font-family:'Patrick Hand',cursive; font-size:0.9rem; color:var(--ochre);">Click a theme to read more.</p>
+    <div id="theme-list">
+      <span class="theme-tag" style="cursor:pointer;font-size:0.88rem;padding:0.4rem 1rem;" onclick="showTheme(this,'friendship')">🤝 Friendship</span>
+      <span class="theme-tag" style="cursor:pointer;font-size:0.88rem;padding:0.4rem 1rem;background:var(--shadow);color:var(--paper);" onclick="showTheme(this,'loneliness')">💭 Loneliness</span>
+      <span class="theme-tag" style="cursor:pointer;font-size:0.88rem;padding:0.4rem 1rem;background:var(--palm);color:var(--paper);" onclick="showTheme(this,'belonging')">🏡 Belonging</span>
+      <span class="theme-tag" style="cursor:pointer;font-size:0.88rem;padding:0.4rem 1rem;background:var(--red-acc);color:var(--paper);" onclick="showTheme(this,'forgiveness')">❤️ Forgiveness</span>
+    </div>
+    <div id="theme-text" style="margin-top:1rem;font-family:'Patrick Hand',cursive;font-size:0.95rem;line-height:1.75;display:none;padding:0.85rem;background:var(--chalk);border-radius:3px;border-left:3px solid var(--dust);"></div>
+  </div>
+  <div class="card">
+    <h3>🗺️ Where and when?</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.5rem;">
+      <div style="text-align:center;padding:1rem;background:var(--chalk);border-radius:3px;border:1px solid var(--fog);">
+        <div style="font-size:2rem;">📍</div>
+        <div style="font-family:'Libre Baskerville',serif;font-style:italic;font-weight:700;color:var(--shadow);margin-top:0.4rem;">Naomi, Florida</div>
+        <div style="font-family:'Patrick Hand',cursive;font-size:0.82rem;color:var(--ochre);margin-top:0.3rem;">A small, hot town in the southern USA</div>
+      </div>
+      <div style="text-align:center;padding:1rem;background:var(--chalk);border-radius:3px;border:1px solid var(--fog);">
+        <div style="font-size:2rem;">☀️</div>
+        <div style="font-family:'Libre Baskerville',serif;font-style:italic;font-weight:700;color:var(--shadow);margin-top:0.4rem;">One summer</div>
+        <div style="font-family:'Patrick Hand',cursive;font-size:0.82rem;color:var(--ochre);margin-top:0.3rem;">Hot days, thunderstorms, and new beginnings</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2. CHARACTERS ===== -->
+<section id="characters" class="section">
+  <div class="section-title">👥 Characters</div>
+  <div class="section-intro">Click a character card to learn more.</div>
+  <div class="char-grid">
+    <div class="char-card" onclick="showChar(0)"><div class="char-emoji">👧</div><div class="char-name">Opal</div><div class="char-desc">The main character</div></div>
+    <div class="char-card" onclick="showChar(1)"><div class="char-emoji">🐕</div><div class="char-name">Winn-Dixie</div><div class="char-desc">The scruffy dog</div></div>
+    <div class="char-card" onclick="showChar(2)"><div class="char-emoji">⛪</div><div class="char-name">The Preacher</div><div class="char-desc">Opal's father</div></div>
+    <div class="char-card" onclick="showChar(3)"><div class="char-emoji">📚</div><div class="char-name">Miss Franny</div><div class="char-desc">The librarian</div></div>
+    <div class="char-card" onclick="showChar(4)"><div class="char-emoji">🎸</div><div class="char-name">Otis</div><div class="char-desc">Works in the pet shop</div></div>
+    <div class="char-card" onclick="showChar(5)"><div class="char-emoji">🌿</div><div class="char-name">Gloria Dump</div><div class="char-desc">Old woman with a garden</div></div>
+  </div>
+  <div id="char-info" class="card" style="display:none;margin-top:1.5rem;border-left:4px solid var(--dust);">
+    <h3 id="char-info-name"></h3>
+    <p id="char-info-text" style="line-height:1.85;font-size:0.95rem;font-family:'Patrick Hand',cursive;"></p>
+    <div id="char-traits" style="margin-top:0.9rem;"></div>
+  </div>
+</section>
+
+<!-- ===== 3. VOCABULARY ===== -->
+<section id="vocab" class="section">
+  <div class="section-title">📝 Key Words</div>
+  <div class="section-intro">Click each card to reveal the meaning. Try to guess first.</div>
+  <div class="vocab-grid">
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">lonely</div>
+      <div class="vocab-hint">How Opal feels at the start 💭</div>
+      <div class="vocab-def">Sad because you have no friends or company. Opal feels this when she arrives in Naomi.</div>
+    </div>
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">preacher</div>
+      <div class="vocab-hint">Opal's father's job ⛪</div>
+      <div class="vocab-def">A person who speaks about religion and leads a church. Opal's father is a preacher.</div>
+    </div>
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">stray</div>
+      <div class="vocab-hint">What kind of dog is Winn-Dixie? 🐕</div>
+      <div class="vocab-def">An animal with no home and no owner. It lives alone on the streets.</div>
+    </div>
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">peculiar</div>
+      <div class="vocab-hint">Strange or unusual 🤔</div>
+      <div class="vocab-def">Strange or unusual in a way that is hard to explain. Winn-Dixie is a peculiar dog — he seems to understand people's feelings.</div>
+    </div>
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">melancholy</div>
+      <div class="vocab-hint">The taste of the Littmus Lozenge 🍬</div>
+      <div class="vocab-def">A quiet, deep sadness — like missing someone from the past. The Littmus Lozenge tastes of melancholy.</div>
+    </div>
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">pathological</div>
+      <div class="vocab-hint">Describes Winn-Dixie's fear ⛈️</div>
+      <div class="vocab-def">Extreme and uncontrollable — more than a normal fear. The preacher says Winn-Dixie has a pathological fear of thunderstorms.</div>
+    </div>
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">notion</div>
+      <div class="vocab-hint">An idea or feeling 💡</div>
+      <div class="vocab-def">A thought or idea, often a vague one. Gloria Dump has a notion that everyone carries sadness inside them.</div>
+    </div>
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">congregation</div>
+      <div class="vocab-hint">Who does the Preacher serve? ⛪</div>
+      <div class="vocab-def">The group of people who go to a particular church together.</div>
+    </div>
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">forgive</div>
+      <div class="vocab-hint">A big theme in the book ❤️</div>
+      <div class="vocab-def">To stop feeling angry at someone who hurt you. To give them another chance.</div>
+    </div>
+    <div class="vocab-card" onclick="revealVocab(this)">
+      <div class="vocab-word">missionary</div>
+      <div class="vocab-hint">Connected to the Preacher's work 🌍</div>
+      <div class="vocab-def">A person who travels to other places to share their religious beliefs. Opal's father is a missionary preacher.</div>
+    </div>
+  </div>
+  <div style="margin-top:1.4rem;text-align:center;font-family:'Patrick Hand',cursive;color:var(--fog);font-size:0.85rem;">
+    <span id="vocab-count">0</span> / 10 words revealed
+  </div>
+</section>
+
+<!-- ===== 4. QUIZ ===== -->
+<section id="quiz" class="section">
+  <div class="section-title">❓ Story Quiz</div>
+  <div class="section-intro">Read each question carefully. You have 1.5 seconds to think before you can answer.</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="quiz-progress" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+  <div id="quiz-score" style="text-align:center;margin-top:1rem;display:none;">
+    <p style="font-family:'Libre Baskerville',serif;font-style:italic;font-size:1.5rem;color:var(--shadow);">Quiz complete.</p>
+    <p style="font-family:'Patrick Hand',cursive;font-size:1rem;margin-top:0.5rem;">Your score: <span id="final-score" class="score-badge"></span></p>
+    <button class="btn secondary" onclick="resetQuiz()" style="margin-top:1rem;">Try Again 🔄</button>
+  </div>
+</section>
+
+<!-- ===== 5. FILL IN ===== -->
+<section id="fill" class="section">
+  <div class="section-title">✏️ Fill in the Blanks</div>
+  <div class="section-intro">Type the correct word. Capitals don't matter.</div>
+  <div id="fill-container"></div>
+  <button class="btn" onclick="checkFill()">Check ✔</button>
+  <button class="btn secondary" onclick="resetFill()" style="margin-left:0.5rem;">Reset 🔄</button>
+  <div class="result-line" id="fill-result"></div>
+</section>
+
+<!-- ===== 6. SORT IT ===== -->
+<section id="drag" class="section">
+  <div class="section-title">🔀 Sort It Out</div>
+  <div class="section-intro">Click a word from the box, then click the gap in the sentence.</div>
+  <div class="drag-bank" id="drag-bank"></div>
+  <div id="drag-sentences"></div>
+  <button class="btn" onclick="checkDrag()">Check ✔</button>
+  <button class="btn secondary" onclick="resetDrag()" style="margin-left:0.5rem;">Reset 🔄</button>
+  <div class="result-line" id="drag-result"></div>
+</section>
+
+<!-- ===== 7. MATCH ===== -->
+<section id="match" class="section">
+  <div class="section-title">🔗 Match the Character</div>
+  <div class="section-intro">Click a name on the left, then click the correct description on the right.</div>
+  <div class="match-grid">
+    <div class="match-col" id="match-left"></div>
+    <div class="match-col" id="match-right"></div>
+  </div>
+  <button class="btn secondary" onclick="resetMatch()">Reset 🔄</button>
+  <div class="result-line" id="match-score"></div>
+</section>
+
+<!-- ===== WRITER'S CRAFT ===== -->
+<section id="craft" class="section">
+  <div class="section-title craft-title">✦ Writer's Craft</div>
+  <div class="section-intro" style="color:var(--craft);">Kate DiCamillo is a careful, distinctive writer. These activities look at how she writes, not just what she writes. <strong>Similes (A2) → Naming &amp; Repetition (B1+).</strong></div>
+
+  <!-- SIMILES -->
+  <div class="card craft-card">
+    <h3>Similes — comparing with <em>like</em> or <em>as</em></h3>
+    <p style="font-family:'Patrick Hand',cursive;font-size:0.9rem;color:var(--shadow);margin-bottom:1.2rem;">A simile compares two different things using the words <strong>like</strong> or <strong>as</strong>. DiCamillo uses vivid similes to bring her characters to life. For each one below: what two things is she comparing? What picture does it create?</p>
+
+    <div class="simile-block">
+      <div class="simile-quote">"He looked like <span class="highlight">a big piece of old brown carpet that had been left out in the rain</span>."</div>
+      <div class="simile-question">Who is being described? What two things are being compared?</div>
+      <input class="simile-input" placeholder="Write your answer here..." id="sim1">
+      <button class="simile-reveal-btn" onclick="toggleSimile(this)">Show answer</button>
+      <div class="simile-answer">Winn-Dixie is being compared to old, wet carpet. DiCamillo is showing that he is big, brown, messy, and unloved — like something thrown away. It immediately makes us feel sorry for him.</div>
+    </div>
+
+    <div class="simile-block">
+      <div class="simile-quote">"The preacher is <span class="highlight">like a turtle hiding inside its shell</span>, in there thinking about things and not ever sticking his head out into the world."</div>
+      <div class="simile-question">What does this simile tell us about the Preacher's personality?</div>
+      <input class="simile-input" placeholder="Write your answer here..." id="sim2">
+      <button class="simile-reveal-btn" onclick="toggleSimile(this)">Show answer</button>
+      <div class="simile-answer">The preacher is compared to a turtle hiding in its shell. This shows that he is closed off and withdrawn — he keeps his feelings inside and doesn't open up easily to the world, or to Opal.</div>
+    </div>
+
+    <div class="simile-block">
+      <div class="simile-quote">"He smelled <span class="highlight">like a terrible, musty smell, like old things and sadness</span>."</div>
+      <div class="simile-question">This simile mixes a physical smell with an emotion. What is unusual about comparing a smell to "sadness"? What does it tell us about Winn-Dixie?</div>
+      <input class="simile-input" placeholder="Write your answer here..." id="sim3">
+      <button class="simile-reveal-btn" onclick="toggleSimile(this)">Show answer</button>
+      <div class="simile-answer">Usually we describe smells with physical words — musty, stale, damp. DiCamillo adds "sadness" — an emotion — to a physical sensation. This tells us that Winn-Dixie doesn't just smell unwashed; he carries sadness with him. It also connects him immediately to Opal, who is also sad. The simile does two things at once.</div>
+    </div>
+
+    <div style="margin-top:1.4rem;padding:1rem;background:var(--chalk);border-radius:3px;">
+      <p style="font-family:'Patrick Hand',cursive;font-weight:700;color:var(--craft);margin-bottom:0.6rem;">✦ Now write your own</p>
+      <p style="font-family:'Patrick Hand',cursive;font-size:0.88rem;color:var(--shadow);margin-bottom:0.6rem;">Write a simile describing Winn-Dixie, Opal, or a place in the story. Use <em>like</em> or <em>as</em>.</p>
+      <input class="simile-input" style="border-bottom-color:var(--dust);" placeholder="e.g. Winn-Dixie's smile was like..." id="simOwn">
+    </div>
+  </div>
+
+  <!-- NAMING -->
+  <div class="card craft-card">
+    <h3>Names — why do they matter?</h3>
+    <p style="font-family:'Patrick Hand',cursive;font-size:0.9rem;line-height:1.7;color:var(--shadow);margin-bottom:1rem;">Kate DiCamillo said: <em>"I love strange names and I love making them up."</em> Names in this book are carefully chosen. Think about what each name might suggest.</p>
+    <div id="name-questions">
+      <div class="simile-block" style="border-left-color:var(--dust);">
+        <div class="simile-question">Why do you think the dog is named after a supermarket? What does this tell us about the moment Opal found him?</div>
+        <input class="simile-input" style="border-bottom-color:var(--dust);" placeholder="Your thoughts...">
+        <button class="simile-reveal-btn" style="background:var(--shadow);" onclick="toggleSimile(this)">Show answer</button>
+        <div class="simile-answer">Naming the dog after the place where she found him keeps that moment alive forever. Even an ordinary, everyday place — a supermarket — becomes meaningful. It suggests that for Opal, finding Winn-Dixie was one of the most important things that ever happened to her.</div>
+      </div>
+      <div class="simile-block" style="border-left-color:var(--dust);margin-top:0.8rem;">
+        <div class="simile-question">Throughout the book, Opal usually calls her father "the Preacher", not "Dad". Why might DiCamillo have made this choice?</div>
+        <input class="simile-input" style="border-bottom-color:var(--dust);" placeholder="Your thoughts...">
+        <button class="simile-reveal-btn" style="background:var(--shadow);" onclick="toggleSimile(this)">Show answer</button>
+        <div class="simile-answer">Calling him "the Preacher" instead of "Dad" shows emotional distance. Opal sometimes sees her father more as a public figure — a man with a role — than as her personal parent. As the story develops and he opens up, this distance slowly begins to close.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPETITION -->
+  <div class="card craft-card">
+    <h3>Repetition — "because of Winn-Dixie"</h3>
+    <p style="font-family:'Patrick Hand',cursive;font-size:0.9rem;line-height:1.7;color:var(--shadow);margin-bottom:1rem;">The phrase <em>"because of Winn-Dixie"</em> appears many times in the book and is also the title. DiCamillo uses it as a structural device — a way of connecting events to the dog.</p>
+    <p style="font-family:'Patrick Hand',cursive;font-size:0.9rem;color:var(--shadow);margin-bottom:0.6rem;font-weight:700;">Complete these sentences in your own words:</p>
+    <div style="margin-bottom:0.6rem;">
+      <span style="font-family:'Patrick Hand',cursive;font-size:0.95rem;">Because of Winn-Dixie, Opal met </span>
+      <input style="border:none;border-bottom:1.5px solid var(--dust);background:transparent;font-family:'Patrick Hand',cursive;font-size:0.95rem;width:220px;outline:none;padding:0 4px;" placeholder="...">
+    </div>
+    <div style="margin-bottom:0.6rem;">
+      <span style="font-family:'Patrick Hand',cursive;font-size:0.95rem;">Because of Winn-Dixie, her father </span>
+      <input style="border:none;border-bottom:1.5px solid var(--dust);background:transparent;font-family:'Patrick Hand',cursive;font-size:0.95rem;width:220px;outline:none;padding:0 4px;" placeholder="...">
+    </div>
+    <div>
+      <span style="font-family:'Patrick Hand',cursive;font-size:0.95rem;">Because of Winn-Dixie, Opal learned </span>
+      <input style="border:none;border-bottom:1.5px solid var(--dust);background:transparent;font-family:'Patrick Hand',cursive;font-size:0.95rem;width:220px;outline:none;padding:0 4px;" placeholder="...">
+    </div>
+  </div>
+</section>
+
+<!-- ===== 8. MY STORY ===== -->
+<section id="creative" class="section">
+  <div class="section-title">🌟 My Story</div>
+  <div class="section-intro">Three different tasks — choose one or do all three.</div>
+
+  <div class="story-tabs">
+    <button class="story-tab active" onclick="switchStoryTab(this,'panel-finddog')">🐕 Find the Dog</button>
+    <button class="story-tab" onclick="switchStoryTab(this,'panel-tenthings')">📋 Ten Things</button>
+    <button class="story-tab" onclick="switchStoryTab(this,'panel-because')">✨ Because of...</button>
+    <button class="story-tab" onclick="switchStoryTab(this,'panel-pov')">👁️ Point of View</button>
+  </div>
+
+  <!-- PANEL 1: original find the dog -->
+  <div class="story-panel active" id="panel-finddog">
+    <div class="card" style="border-radius:0 3px 3px 3px;">
+      <h3>Imagine you find Winn-Dixie</h3>
+      <p style="font-family:'Patrick Hand',cursive;font-size:0.9rem;color:var(--ochre);margin-bottom:0.9rem;">Write 3–5 sentences. Use the chips to help you start. 🐾</p>
+      <p style="font-family:'Patrick Hand',cursive;font-weight:700;margin-bottom:0.4rem;color:var(--shadow);">Begin with:</p>
+      <div class="story-prompts">
+        <div class="prompt-chip" onclick="insertPrompt('fd','One afternoon, I was walking past the supermarket when I noticed a large, scruffy dog sitting alone outside.')">One afternoon...</div>
+        <div class="prompt-chip" onclick="insertPrompt('fd','I had just moved to a new town and I was feeling lonely when I discovered an unusual dog.')">I had just moved...</div>
+        <div class="prompt-chip" onclick="insertPrompt('fd','The dog looked at me with such sadness in his eyes that I couldn\'t just walk past.')">The dog looked...</div>
+      </div>
+      <p style="font-family:'Patrick Hand',cursive;font-weight:700;margin-bottom:0.4rem;margin-top:0.8rem;color:var(--shadow);">Continue:</p>
+      <div class="story-prompts">
+        <div class="prompt-chip" onclick="insertPrompt('fd',' He seemed to understand exactly how I was feeling.')">He understood...</div>
+        <div class="prompt-chip" onclick="insertPrompt('fd',' Despite his scruffy appearance, there was something extraordinary about him.')">Something extraordinary...</div>
+        <div class="prompt-chip" onclick="insertPrompt('fd',' I decided to call him _______ because _______.')">I named him...</div>
+      </div>
+      <p style="font-family:'Patrick Hand',cursive;font-weight:700;margin-bottom:0.4rem;margin-top:0.8rem;color:var(--shadow);">Finish with:</p>
+      <div class="story-prompts">
+        <div class="prompt-chip" onclick="insertPrompt('fd',' After that day, I wasn\'t lonely anymore — and neither was he.')">Not lonely anymore...</div>
+        <div class="prompt-chip" onclick="insertPrompt('fd',' He helped me feel like I belonged somewhere.')">Belonging...</div>
+      </div>
+      <textarea class="story-area" id="fd-text" placeholder="Write your story here... 🐾"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;">
+        <span id="fd-count" style="font-family:'Patrick Hand',cursive;font-size:0.83rem;color:var(--fog);">0 words</span>
+        <button class="btn secondary" onclick="clearTextarea('fd-text','fd-count')">Clear ✖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 2: ten things -->
+  <div class="story-panel" id="panel-tenthings">
+    <div class="card" style="border-radius:0 3px 3px 3px;">
+      <h3>Ten Things About...</h3>
+      <p style="font-family:'Patrick Hand',cursive;font-size:0.9rem;color:var(--ochre);margin-bottom:0.4rem;">In Chapter 4, Opal learns ten things about her mother — it's how DiCamillo builds a character we never meet. Now you try. Choose a person, pet, or place that matters to you. Write ten things that describe them.</p>
+      <p style="font-family:'Patrick Hand',cursive;font-size:0.85rem;color:var(--fog);margin-bottom:1rem;font-style:italic;">You could write about: a family member, a pet, a friend, a place you love.</p>
+      <div style="margin-bottom:0.8rem;">
+        <span style="font-family:'Patrick Hand',cursive;font-size:0.9rem;color:var(--shadow);font-weight:700;">I am writing about: </span>
+        <input style="border:none;border-bottom:1.5px solid var(--dust);background:transparent;font-family:'Patrick Hand',cursive;font-size:0.95rem;width:200px;outline:none;padding:0 4px;" placeholder="e.g. my dog">
+      </div>
+      <ul class="ten-things-list">
+        <li><input class="ten-input" placeholder="The first thing people notice about them is..."></li>
+        <li><input class="ten-input" placeholder="They love..."></li>
+        <li><input class="ten-input" placeholder="They are afraid of..."></li>
+        <li><input class="ten-input" placeholder="Something funny about them is..."></li>
+        <li><input class="ten-input" placeholder="Something sad about them is..."></li>
+        <li><input class="ten-input" placeholder="They remind me of..."></li>
+        <li><input class="ten-input" placeholder="Other people don't know that they..."></li>
+        <li><input class="ten-input" placeholder="The best thing about them is..."></li>
+        <li><input class="ten-input" placeholder="Sometimes they..."></li>
+        <li><input class="ten-input" placeholder="Because of them, I..."></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PANEL 3: because of... -->
+  <div class="story-panel" id="panel-because">
+    <div class="card" style="border-radius:0 3px 3px 3px;">
+      <h3>Because of...</h3>
+      <p style="font-family:'Patrick Hand',cursive;font-size:0.9rem;color:var(--ochre);margin-bottom:0.9rem;">Think about someone or something that changed your life — a person, a pet, a book, a place, a moment. Write 4–6 sentences about what happened <em>because of</em> them.</p>
+      <p style="font-family:'Patrick Hand',cursive;font-weight:700;margin-bottom:0.4rem;color:var(--shadow);">Useful phrases:</p>
+      <div class="story-prompts">
+        <div class="prompt-chip" onclick="insertPrompt('bc','Because of _______, I learned that...')">Because of..., I learned</div>
+        <div class="prompt-chip" onclick="insertPrompt('bc','Before I met _______, I used to...')">Before I met...</div>
+        <div class="prompt-chip" onclick="insertPrompt('bc','Everything changed when...')">Everything changed when...</div>
+        <div class="prompt-chip" onclick="insertPrompt('bc','I never expected that _______ would...')">I never expected...</div>
+        <div class="prompt-chip" onclick="insertPrompt('bc','Looking back, I realise that...')">Looking back...</div>
+      </div>
+      <textarea class="story-area" id="bc-text" placeholder="Write your story here..."></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;">
+        <span id="bc-count" style="font-family:'Patrick Hand',cursive;font-size:0.83rem;color:var(--fog);">0 words</span>
+        <button class="btn secondary" onclick="clearTextarea('bc-text','bc-count')">Clear ✖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 4: point of view -->
+  <div class="story-panel" id="panel-pov">
+    <div class="card" style="border-radius:0 3px 3px 3px;">
+      <h3>Point of view: the supermarket scene</h3>
+      <p style="font-family:'Patrick Hand',cursive;font-size:0.9rem;color:var(--ochre);margin-bottom:1rem;">In Chapter One we see everything through Opal's eyes. But what about the other people in that scene? Choose a perspective and write 3–4 sentences.</p>
+
+      <div class="pov-tabs">
+        <button class="pov-tab active" onclick="switchPOV(this,'pov-dog')">🐕 Winn-Dixie</button>
+        <button class="pov-tab" onclick="switchPOV(this,'pov-manager')">👔 The Manager</button>
+        <button class="pov-tab" onclick="switchPOV(this,'pov-shopper')">🛒 A Shopper</button>
+      </div>
+
+      <div class="pov-panel active" id="pov-dog">
+        <div class="pov-scene">You are Winn-Dixie — a large, hungry, messy dog who has wandered into a supermarket. You don't know why you're there. Suddenly, a girl looks at you and says: "That's my dog." No one has ever claimed you before.</div>
+        <p style="font-family:'Patrick Hand',cursive;font-size:0.85rem;color:var(--fog);margin-bottom:0.5rem;font-style:italic;">Think about: What does the store smell and feel like? What do you feel when Opal speaks to you?</p>
+        <div class="story-prompts" style="margin-bottom:0.7rem;">
+          <div class="prompt-chip" onclick="insertPOV('pov-dog-text','pov-dog-count','The supermarket was enormous and full of strange smells.')">The supermarket was...</div>
+          <div class="prompt-chip" onclick="insertPOV('pov-dog-text','pov-dog-count','I did not expect anyone to notice me.')">I did not expect...</div>
+          <div class="prompt-chip" onclick="insertPOV('pov-dog-text','pov-dog-count','When she looked at me, I felt something I had never felt before.')">When she looked...</div>
+        </div>
+        <textarea class="story-area" id="pov-dog-text" style="border-radius:3px;" placeholder="Write from Winn-Dixie's point of view..."></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.4rem;">
+          <span id="pov-dog-count" style="font-family:'Patrick Hand',cursive;font-size:0.83rem;color:var(--fog);">0 words</span>
+          <button class="btn secondary" onclick="clearTextarea('pov-dog-text','pov-dog-count')">Clear ✖</button>
+        </div>
+      </div>
+
+      <div class="pov-panel" id="pov-manager">
+        <div class="pov-scene">You are the store manager. A large, chaotic dog has just run through your supermarket, knocking things over. You are about to call the pound when a small girl claims it's her dog.</div>
+        <p style="font-family:'Patrick Hand',cursive;font-size:0.85rem;color:var(--fog);margin-bottom:0.5rem;font-style:italic;">Think about: How do you feel about the mess? What do you think when the girl speaks?</p>
+        <div class="story-prompts" style="margin-bottom:0.7rem;">
+          <div class="prompt-chip" onclick="insertPOV('pov-manager-text','pov-manager-count','I could not believe what I was seeing.')">I could not believe...</div>
+          <div class="prompt-chip" onclick="insertPOV('pov-manager-text','pov-manager-count','The dog had already knocked over three shelves when...')">The dog had already...</div>
+          <div class="prompt-chip" onclick="insertPOV('pov-manager-text','pov-manager-count','I was just about to call for help when a girl stepped forward and said...')">I was just about to...</div>
+        </div>
+        <textarea class="story-area" id="pov-manager-text" style="border-radius:3px;" placeholder="Write from the manager's point of view..."></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.4rem;">
+          <span id="pov-manager-count" style="font-family:'Patrick Hand',cursive;font-size:0.83rem;color:var(--fog);">0 words</span>
+          <button class="btn secondary" onclick="clearTextarea('pov-manager-text','pov-manager-count')">Clear ✖</button>
+        </div>
+      </div>
+
+      <div class="pov-panel" id="pov-shopper">
+        <div class="pov-scene">You are an ordinary shopper in the Winn-Dixie supermarket on a hot Tuesday afternoon. You did not expect to see a large, muddy dog running through the fruit and vegetable aisle.</div>
+        <p style="font-family:'Patrick Hand',cursive;font-size:0.85rem;color:var(--fog);margin-bottom:0.5rem;font-style:italic;">Think about: What are you doing when the dog appears? What do you see, hear, and think?</p>
+        <div class="story-prompts" style="margin-bottom:0.7rem;">
+          <div class="prompt-chip" onclick="insertPOV('pov-shopper-text','pov-shopper-count','I was reaching for a tin of beans when I heard a crash.')">I was reaching for...</div>
+          <div class="prompt-chip" onclick="insertPOV('pov-shopper-text','pov-shopper-count','At first I thought it was just a noise, but then I saw...')">At first I thought...</div>
+          <div class="prompt-chip" onclick="insertPOV('pov-shopper-text','pov-shopper-count','Nobody moved. We all just stood there and stared.')">Nobody moved...</div>
+        </div>
+        <textarea class="story-area" id="pov-shopper-text" style="border-radius:3px;" placeholder="Write from a shopper's point of view..."></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.4rem;">
+          <span id="pov-shopper-count" style="font-family:'Patrick Hand',cursive;font-size:0.83rem;color:var(--fog);">0 words</span>
+          <button class="btn secondary" onclick="clearTextarea('pov-shopper-text','pov-shopper-count')">Clear ✖</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- useful words -->
+  <div class="card" style="margin-top:1rem;">
+    <h3>✏️ Useful words</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:0.45rem;margin-top:0.5rem;">
+      <span class="theme-tag">discovered</span>
+      <span class="theme-tag" style="background:var(--shadow);color:var(--paper);">wandering</span>
+      <span class="theme-tag" style="background:var(--palm);color:var(--paper);">belonged</span>
+      <span class="theme-tag" style="background:var(--red-acc);color:var(--paper);">abandoned</span>
+      <span class="theme-tag" style="background:var(--ochre);color:var(--paper);">scruffy</span>
+      <span class="theme-tag">extraordinary</span>
+      <span class="theme-tag" style="background:var(--palm);color:var(--paper);">connection</span>
+      <span class="theme-tag" style="background:var(--shadow);color:var(--paper);">realised</span>
+      <span class="theme-tag" style="background:var(--haze);">forgiveness</span>
+      <span class="theme-tag">despite</span>
+      <span class="theme-tag" style="background:var(--red-acc);color:var(--paper);">longing</span>
+      <span class="theme-tag" style="background:var(--palm);color:var(--paper);">community</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXTENSION ===== -->
+<section id="extension" class="section">
+  <div class="section-title ext-title">★ Extension</div>
+  <div class="section-intro" style="color:var(--shadow);">These questions are harder. Think carefully. Click to see a suggested answer.</div>
+
+  <div class="ext-q">
+    <p><strong>1.</strong> The Littmus Lozenge tastes sweet and sad at the same time. Each character tastes something slightly different. Why do you think the same sweet tastes different to different people?</p>
+    <button class="ext-reveal-btn" onclick="toggleExt(this)">Show suggested answer</button>
+    <div class="ext-answer">Each character carries their own sadness or loss. The lozenge seems to bring out whatever is already inside the person who tastes it. This suggests that sorrow is personal — everyone's experience of it is shaped by their own history and what they have lost.</div>
+  </div>
+
+  <div class="ext-q">
+    <p><strong>2.</strong> Gloria Dump's tree is covered in bottles representing her past mistakes. Rather than hiding them, she puts them on display. What does this tell us about how she thinks about regret and forgiveness?</p>
+    <button class="ext-reveal-btn" onclick="toggleExt(this)">Show suggested answer</button>
+    <div class="ext-answer">Gloria doesn't hide her mistakes — she acknowledges them openly. The bottles suggest that she believes in accepting your past rather than being ashamed of it. Displaying them could also be a way of forgiving herself: the mistakes are there, they happened, but they don't define who she is now.</div>
+  </div>
+
+  <div class="ext-q">
+    <p><strong>3.</strong> Opal says: <em>"Just about everything that happened to me that summer happened because of Winn-Dixie."</em> Do you think this is completely true? Is she underestimating her own role in what happened?</p>
+    <button class="ext-reveal-btn" onclick="toggleExt(this)">Show suggested answer</button>
+    <div class="ext-answer">Winn-Dixie opened doors — he created the first connections. But it was Opal's own curiosity, kindness, and courage that turned those connections into real friendships. She chose to talk to Gloria Dump, she organised the party, she forgave people. The dog gave her opportunities; she took them.</div>
+  </div>
+
+  <div class="ext-q">
+    <p><strong>4.</strong> Gloria Dump says: <em>"There ain't no way you can hold on to something that wants to go. You can only love what you got while you got it."</em> What does this mean? How does it connect to Opal's feelings about her mother?</p>
+    <button class="ext-reveal-btn" onclick="toggleExt(this)">Show suggested answer</button>
+    <div class="ext-answer">Gloria is saying that trying to hold on to something or someone who has left only causes more pain. It connects directly to Opal's grief about her mother — the message is that rather than spending all her energy missing what's gone, Opal should cherish what she has now: her father, her new friends, Winn-Dixie.</div>
+  </div>
+
+  <div class="ext-q">
+    <p><strong>5.</strong> Would you want to eat a Littmus Lozenge? It is described as tasting sweet but also sad at the same time. Why might someone want that experience — or not want it?</p>
+    <button class="ext-reveal-btn" onclick="toggleExt(this)">Show suggested answer</button>
+    <div class="ext-answer">There is no single answer here — but ask yourself: what does your answer reveal about how you feel about sadness? Do you think it is something to avoid, or something worth understanding? How does your answer compare to what Opal, Miss Franny, or Gloria Dump might say?</div>
+  </div>
+
+  <!-- SENSORY WRITING -->
+  <div class="card" style="margin-top:1.5rem;border-left:4px solid var(--dust);">
+    <h3>🍬 Sensory writing: describe a feeling</h3>
+    <p style="font-family:'Patrick Hand',cursive;font-size:0.9rem;line-height:1.7;color:var(--shadow);margin-bottom:1rem;">DiCamillo describes the emotion of melancholy as a <em>taste</em>. Choose a feeling — happiness, nervousness, homesickness, excitement — and describe it using your senses. What does it taste like? Smell like? Sound like?</p>
+    <p style="font-family:'Patrick Hand',cursive;font-size:0.88rem;font-weight:700;color:var(--ochre);margin-bottom:0.8rem;">My feeling: <input style="border:none;border-bottom:1.5px solid var(--dust);background:transparent;font-family:'Patrick Hand',cursive;font-size:0.95rem;width:180px;outline:none;padding:0 4px;" placeholder="e.g. nervousness"></p>
+    <div class="ext-sensory">
+      <div class="sensory-row">
+        <span class="sensory-label">🍋 Tastes</span>
+        <input class="sensory-input" placeholder="like...">
+      </div>
+      <div class="sensory-row">
+        <span class="sensory-label">🌧️ Smells</span>
+        <input class="sensory-input" placeholder="like...">
+      </div>
+      <div class="sensory-row">
+        <span class="sensory-label">🎵 Sounds</span>
+        <input class="sensory-input" placeholder="like...">
+      </div>
+      <div class="sensory-row">
+        <span class="sensory-label">🖐️ Feels</span>
+        <input class="sensory-input" placeholder="like...">
+      </div>
+      <div class="sensory-row">
+        <span class="sensory-label">🎨 Looks</span>
+        <input class="sensory-input" placeholder="like...">
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+// ---- NAV ----
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ---- THEMES ----
+const themeInfo = {
+  friendship: "Winn-Dixie helps Opal meet many different people in Naomi. Some are lonely, some have difficult pasts — but through the dog, Opal connects with all of them. She learns that friendship can come from unexpected places.",
+  loneliness: "Opal feels very lonely at the start. She has no friends, she misses her mother, and she is new in town. But she is not the only lonely person in Naomi — many of the characters share this feeling.",
+  belonging: "Opal wants to feel at home in her new town. Through Winn-Dixie and the friends she makes, she begins to feel that Naomi is her community — a place where she belongs.",
+  forgiveness: "Opal's mother left the family when Opal was very young. The story explores whether it is possible to forgive someone who hurt you, even if they are not there to ask for forgiveness."
+};
+function showTheme(el, key) {
+  const box = document.getElementById('theme-text');
+  box.style.display = 'block';
+  box.textContent = themeInfo[key];
+}
+
+// ---- CHARACTERS ----
+const chars = [
+  { name: "Opal", text: "Opal is 10 years old and the narrator of the story. She has recently moved to Naomi with her father and feels very lonely. She is brave, curious, and kind. She misses her mother, who left the family when Opal was three years old.", traits: ["brave", "curious", "lonely", "kind"] },
+  { name: "Winn-Dixie", text: "Winn-Dixie is a large, shaggy, chaotic dog with an extraordinary smile. He is terrified of thunderstorms. Wherever he goes, he helps people connect with each other. He has an unusual ability to sense people's feelings.", traits: ["friendly", "funny", "sensitive", "scared of storms"] },
+  { name: "The Preacher", text: "The Preacher is Opal's father. He is quiet and gentle, but he finds it hard to talk about his feelings. He is devoted to his church and to Opal, but his sadness about his wife leaving has made him distant. Slowly, he begins to open up.", traits: ["quiet", "devoted", "loving", "sad"] },
+  { name: "Miss Franny Block", text: "Miss Franny is the elderly town librarian. She is full of interesting stories — including one about a real bear that walked into her library. She becomes one of Opal's closest friends.", traits: ["wise", "friendly", "storytelling", "brave"] },
+  { name: "Otis", text: "Otis is a shy, quiet man who works at Gertrude's Pets. He plays guitar for the animals to calm them down. He has had a difficult past, but Opal accepts him as a friend without asking questions.", traits: ["shy", "musical", "gentle", "kind"] },
+  { name: "Gloria Dump", text: "Gloria Dump is an old woman who lives alone in a large, overgrown garden. She cannot see well. She has a special tree covered in glass bottles — one for each of her past mistakes. She is wise and kind, and becomes like a grandmother to Opal.", traits: ["wise", "accepting", "reflective", "warm"] }
+];
+function showChar(i) {
+  const c = chars[i];
+  document.getElementById('char-info').style.display = 'block';
+  document.getElementById('char-info-name').textContent = c.name;
+  document.getElementById('char-info-text').textContent = c.text;
+  document.getElementById('char-traits').innerHTML = c.traits.map(t =>
+    `<span class="theme-tag" style="background:var(--dust);color:white;">${t}</span>`
+  ).join(' ');
+  document.getElementById('char-info').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ---- VOCABULARY ----
+let vocabCount = 0;
+function revealVocab(card) {
+  if (!card.classList.contains('revealed')) {
+    card.classList.add('revealed');
+    vocabCount++;
+    document.getElementById('vocab-count').textContent = vocabCount;
+  }
+}
+
+// ---- QUIZ ----
+const quizData = [
+  { q: "Where does Opal find the dog?", opts: ["In the park", "At the supermarket", "Outside the church", "In Gloria's garden"], ans: 1 },
+  { q: "What does Opal call the dog?", opts: ["Naomi", "Biscuit", "Winn-Dixie", "Florida"], ans: 2 },
+  { q: "What is Opal's father's job?", opts: ["Teacher", "Doctor", "Librarian", "Preacher"], ans: 3 },
+  { q: "What is Winn-Dixie afraid of?", opts: ["Thunderstorms", "Cars", "Other dogs", "Loud music"], ans: 0 },
+  { q: "What animal once walked into Miss Franny's library?", opts: ["A dog", "A cat", "A bear", "A deer"], ans: 2 },
+  { q: "What instrument does Otis play?", opts: ["Piano", "Drums", "Violin", "Guitar"], ans: 3 },
+  { q: "What does Gloria Dump hang on her tree?", opts: ["Flowers", "Old photographs", "Glass bottles", "Wind chimes"], ans: 2 },
+  { q: "What is the name of the town Opal moves to?", opts: ["Orlando", "Miami", "Naomi", "Tampa"], ans: 2 }
+];
+let quizScore = 0, quizAnswered = 0;
+function buildQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  quizScore = 0; quizAnswered = 0;
+  updateQuizProgress();
+  quizData.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.id = `qq${i}`;
+    div.innerHTML = `<p>${i+1}. ${q.q}</p>
+      <div class="think-overlay" id="qt${i}">Think first... ⏳</div>
+      <div class="options">${q.opts.map((o,j) =>
+        `<button class="opt-btn thinking" onclick="checkQuiz(${i},${j})" disabled>${o}</button>`
+      ).join('')}</div>
+      <div class="feedback" id="qf${i}"></div>`;
+    c.appendChild(div);
+    setTimeout(() => {
+      div.querySelectorAll('.opt-btn').forEach(b => { b.disabled = false; b.classList.remove('thinking'); });
+      const ov = document.getElementById(`qt${i}`);
+      if (ov) ov.textContent = '';
+    }, 1500);
+  });
+}
+function checkQuiz(qi, ai) {
+  const q = quizData[qi];
+  const btns = document.querySelectorAll(`#qq${qi} .opt-btn`);
+  btns.forEach(b => b.disabled = true);
+  if (ai === q.ans) {
+    btns[ai].classList.add('correct');
+    document.getElementById(`qf${qi}`).textContent = '✅ Correct!';
+    quizScore++;
+  } else {
+    btns[ai].classList.add('wrong');
+    btns[q.ans].classList.add('correct');
+    document.getElementById(`qf${qi}`).textContent = `❌ The answer is: "${q.opts[q.ans]}"`;
+  }
+  quizAnswered++;
+  updateQuizProgress();
+  if (quizAnswered === quizData.length) {
+    setTimeout(() => {
+      document.getElementById('quiz-score').style.display = 'block';
+      document.getElementById('final-score').textContent = `${quizScore} / ${quizData.length}`;
+    }, 700);
+  }
+}
+function updateQuizProgress() {
+  document.getElementById('quiz-progress').style.width = `${(quizAnswered / quizData.length) * 100}%`;
+}
+function resetQuiz() {
+  document.getElementById('quiz-score').style.display = 'none';
+  buildQuiz();
+}
+
+// ---- FILL ----
+const fillData = [
+  { before: "Opal and her father moved to a town called", blank: ["Naomi"], after: "in Florida." },
+  { before: "Winn-Dixie was a", blank: ["stray"], after: "dog with no owner." },
+  { before: "The dog was terrified of", blank: ["thunderstorms", "thunderstorm"], after: "." },
+  { before: "Miss Franny worked as the town", blank: ["librarian"], after: "." },
+  { before: "The Preacher said that Winn-Dixie's fear of thunderstorms was so strong it was almost", blank: ["pathological"], after: "." },
+  { before: "Opal's father was called 'the", blank: ["preacher"], after: "'." }
+];
+function buildFill() {
+  const c = document.getElementById('fill-container');
+  c.innerHTML = '';
+  fillData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.style.padding = '1rem 1.2rem';
+    div.innerHTML = `<div class="blank-sentence">${item.before} <input class="blank-input" id="fi${i}" type="text" autocomplete="off" spellcheck="false" placeholder="?"> ${item.after}</div>`;
+    c.appendChild(div);
+  });
+}
+function checkFill() {
+  let correct = 0;
+  fillData.forEach((item, i) => {
+    const inp = document.getElementById(`fi${i}`);
+    const val = inp.value.trim().toLowerCase();
+    const ok = item.blank.some(b => b.toLowerCase() === val);
+    inp.classList.remove('correct', 'wrong');
+    inp.classList.add(ok ? 'correct' : 'wrong');
+    if (ok) correct++;
+  });
+  const r = document.getElementById('fill-result');
+  r.textContent = `✔ ${correct} / ${fillData.length} correct`;
+  r.style.color = correct === fillData.length ? 'var(--palm)' : 'var(--red-acc)';
+}
+function resetFill() {
+  fillData.forEach((_, i) => {
+    const inp = document.getElementById(`fi${i}`);
+    inp.value = '';
+    inp.classList.remove('correct', 'wrong');
+  });
+  document.getElementById('fill-result').textContent = '';
+}
+
+// ---- DRAG ----
+const dragData = [
+  { before: "Opal felt very", blank: "lonely", after: "when she arrived in Naomi." },
+  { before: "Winn-Dixie's appearance was", blank: "peculiar", after: "— scruffy, smelly, and enormous." },
+  { before: "Gloria Dump's garden was wild and", blank: "overgrown", after: "." },
+  { before: "The Preacher was quiet and", blank: "distant", after: "— he found it hard to talk about his feelings." },
+  { before: "Despite everything, Opal was", blank: "determined", after: "to make friends in her new town." }
+];
+let selectedWord = null, dragAnswers = {};
+function buildDrag() {
+  selectedWord = null; dragAnswers = {};
+  const bank = document.getElementById('drag-bank');
+  const words = dragData.map(d => d.blank).sort(() => Math.random() - 0.5);
+  bank.innerHTML = words.map(w => `<div class="drag-word" id="dw-${w}" onclick="selectWord('${w}')">${w}</div>`).join('');
+  const sc = document.getElementById('drag-sentences');
+  sc.innerHTML = dragData.map((item, i) =>
+    `<p class="drop-sentence">${item.before} <span class="drop-zone" id="dz${i}" onclick="dropToZone(${i})">___</span> ${item.after}</p>`
+  ).join('');
+  document.getElementById('drag-result').textContent = '';
+}
+function selectWord(w) {
+  document.querySelectorAll('.drag-word').forEach(el => el.classList.remove('selected-word'));
+  selectedWord = w;
+  const el = document.getElementById(`dw-${w}`);
+  if (el && !el.classList.contains('used')) el.classList.add('selected-word');
+}
+function dropToZone(i) {
+  if (!selectedWord) return;
+  const wordEl = document.getElementById(`dw-${selectedWord}`);
+  if (wordEl && wordEl.classList.contains('used')) return;
+  const prev = dragAnswers[i];
+  if (prev) {
+    const prevEl = document.getElementById(`dw-${prev}`);
+    if (prevEl) { prevEl.classList.remove('used'); }
+  }
+  dragAnswers[i] = selectedWord;
+  const zone = document.getElementById(`dz${i}`);
+  zone.textContent = selectedWord;
+  zone.classList.add('filled');
+  zone.classList.remove('correct-zone', 'wrong-zone');
+  if (wordEl) { wordEl.classList.add('used'); wordEl.classList.remove('selected-word'); }
+  selectedWord = null;
+}
+function checkDrag() {
+  let correct = 0;
+  dragData.forEach((item, i) => {
+    const zone = document.getElementById(`dz${i}`);
+    if (dragAnswers[i] === item.blank) { zone.classList.add('correct-zone'); correct++; }
+    else { zone.classList.add('wrong-zone'); }
+  });
+  const r = document.getElementById('drag-result');
+  r.textContent = `✔ ${correct} / ${dragData.length} correct`;
+  r.style.color = correct === dragData.length ? 'var(--palm)' : 'var(--red-acc)';
+}
+function resetDrag() { buildDrag(); }
+
+// ---- MATCH ----
+const matchData = [
+  { name: "Opal", desc: "A 10-year-old girl who moves to Naomi and finds a stray dog" },
+  { name: "Winn-Dixie", desc: "A shaggy dog who helps Opal connect with people in the town" },
+  { name: "Miss Franny", desc: "An elderly librarian who tells Opal remarkable stories" },
+  { name: "Gloria Dump", desc: "An old woman with a garden and a tree covered in bottles" },
+  { name: "Otis", desc: "A shy man who plays guitar to calm the animals in the pet shop" },
+  { name: "The Preacher", desc: "Opal's quiet father who finds it hard to talk about his feelings" }
+];
+let matchSelected = null, matchState = {};
+function buildMatch() {
+  matchSelected = null; matchState = {};
+  const descs = matchData.map(m => m.desc).sort(() => Math.random() - 0.5);
+  document.getElementById('match-left').innerHTML = matchData.map(m => {
+    const id = `mn-${m.name.replace(/\s/g,'_')}`;
+    return `<div class="match-item" id="${id}" onclick="selectMatchItem('name','${m.name}')">${m.name}</div>`;
+  }).join('');
+  document.getElementById('match-right').innerHTML = descs.map((d, i) =>
+    `<div class="match-item" id="md-${i}" onclick="selectMatchItem('desc',${JSON.stringify(d)},'${i}')">${d}</div>`
+  ).join('');
+  document.getElementById('match-score').textContent = '';
+}
+function selectMatchItem(type, val, idx) {
+  if (type === 'name') {
+    document.querySelectorAll('#match-left .match-item').forEach(el => {
+      if (!el.classList.contains('matched-correct')) el.classList.remove('selected');
+    });
+    matchSelected = val;
+    const el = document.getElementById(`mn-${val.replace(/\s/g,'_')}`);
+    if (el && !el.classList.contains('matched-correct')) el.classList.add('selected');
+  } else {
+    if (!matchSelected) return;
+    const correct = matchData.find(m => m.name === matchSelected);
+    const nameEl = document.getElementById(`mn-${matchSelected.replace(/\s/g,'_')}`);
+    const descEl = document.getElementById(`md-${idx}`);
+    if (correct && correct.desc === val) {
+      nameEl.classList.remove('selected'); nameEl.classList.add('matched-correct'); nameEl.onclick = null;
+      descEl.classList.add('matched-correct'); descEl.onclick = null;
+      matchState[matchSelected] = true;
+    } else {
+      nameEl.classList.add('matched-wrong'); descEl.classList.add('matched-wrong');
+      setTimeout(() => { nameEl.classList.remove('matched-wrong','selected'); descEl.classList.remove('matched-wrong'); }, 750);
+    }
+    matchSelected = null;
+    if (Object.keys(matchState).length === matchData.length) {
+      const r = document.getElementById('match-score');
+      r.textContent = '🎉 All matched!';
+      r.style.color = 'var(--palm)';
+    }
+  }
+}
+function resetMatch() { buildMatch(); }
+
+// ---- CREATIVE TABS ----
+function switchStoryTab(btn, panelId) {
+  document.querySelectorAll('.story-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.story-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+function insertPrompt(prefix, text) {
+  const taId = prefix === 'fd' ? 'fd-text' : 'bc-text';
+  const countId = prefix === 'fd' ? 'fd-count' : 'bc-count';
+  const ta = document.getElementById(taId);
+  const pos = ta.selectionStart;
+  const before = ta.value.substring(0, pos);
+  const after = ta.value.substring(pos);
+  ta.value = before + (before && !before.endsWith(' ') ? ' ' : '') + text + after;
+  ta.focus();
+  updateWordCount(taId, countId);
+}
+
+function insertPOV(taId, countId, text) {
+  const ta = document.getElementById(taId);
+  if (!ta) return;
+  const val = ta.value;
+  ta.value = val + (val && !val.endsWith(' ') && !val.endsWith('\n') ? ' ' : '') + text + ' ';
+  ta.focus();
+  updateWordCount(taId, countId);
+}
+
+function updateWordCount(taId, countId) {
+  const text = document.getElementById(taId).value.trim();
+  const count = text ? text.split(/\s+/).length : 0;
+  document.getElementById(countId).textContent = `${count} word${count !== 1 ? 's' : ''}`;
+}
+
+function clearTextarea(taId, countId) {
+  document.getElementById(taId).value = '';
+  document.getElementById(countId).textContent = '0 words';
+}
+
+// ---- POV TABS ----
+function switchPOV(btn, panelId) {
+  document.querySelectorAll('.pov-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pov-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+// ---- SIMILE REVEAL ----
+function toggleSimile(btn) {
+  const ans = btn.nextElementSibling;
+  if (ans.style.display === 'block') {
+    ans.style.display = 'none';
+    btn.textContent = 'Show answer';
+  } else {
+    ans.style.display = 'block';
+    btn.textContent = 'Hide answer';
+  }
+}
+
+// ---- EXTENSION ----
+function toggleExt(btn) {
+  const ans = btn.nextElementSibling;
+  if (ans.style.display === 'block') {
+    ans.style.display = 'none';
+    btn.textContent = 'Show suggested answer';
+  } else {
+    ans.style.display = 'block';
+    btn.textContent = 'Hide answer';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildQuiz();
+  buildFill();
+  buildDrag();
+  buildMatch();
+  // Word count listeners
+  const wcPairs = [
+    ['fd-text','fd-count'],
+    ['bc-text','bc-count'],
+    ['pov-dog-text','pov-dog-count'],
+    ['pov-manager-text','pov-manager-count'],
+    ['pov-shopper-text','pov-shopper-count']
+  ];
+  wcPairs.forEach(([taId, countId]) => {
+    const el = document.getElementById(taId);
+    if (el) el.addEventListener('input', () => updateWordCount(taId, countId));
+  });
+});
+</script>
+</body>
+</html>
